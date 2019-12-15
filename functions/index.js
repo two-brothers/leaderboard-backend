@@ -1,8 +1,26 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions')
+const admin = require('firebase-admin')
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
+
+admin.initializeApp();
+exports.getRecipe = functions.https.onRequest(async (request, response) => {
+    const id = request.query.id
+//    const recipe = await admin
+//        .firestore()
+//        .doc(`message/${id}`)
+//        .get()
+//        .then(snapshot => snapshot.data())
 //
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+//    response.status(200).json({
+//        id,
+//        message: recipe
+//    })
+
+  await admin.firestore().doc(`message/${id}`).set({
+    name: "Los Angeles",
+    state: "CA",
+    country: "USA"
+  })
+
+  response.status(200).json({ myresponse: 'fool'})
+})
