@@ -5,29 +5,47 @@ import DocumentReference = admin.firestore.DocumentReference
 export type PlayerReference = DocumentReference
 export type GameReference = DocumentReference
 
-export interface Match {
+export interface AbstractMatch {
     date: Timestamp
     game: GameReference
-    result: ScoredResult | RankedResult
 }
 
-export interface ScoredResult {
-    player: PlayerReference
-    score: number
+export interface ScoredMatch extends AbstractMatch {
+    result: {
+        player: PlayerReference
+        score: number
+    }
 }
 
-export interface RankedResult {
-    winner: PlayerReference
-    loser: PlayerReference
+export interface RankedMatch extends AbstractMatch {
+    result: {
+        winner: PlayerReference
+        loser: PlayerReference
+    }
 }
 
-export interface Game {
+export type Match = ScoredMatch | RankedMatch
+
+export interface AbstractGame {
     gameType: GameType
     title: String
     summary: String
     sportId: String
-    leaderboard: LeaderboardEntry[]
 }
+
+export interface ScoredGame extends AbstractGame {
+    gameType: GameType.HIGH_SCORE | GameType.LOW_SCORE
+    leaderboard: ScoredLeaderboardEntry[]
+}
+
+export interface RankedGame extends AbstractGame {
+    gameType: GameType.RANKED
+    leaderboard: RankedLeaderboardEntry[]
+    winningStreak: number
+}
+
+export type Game = ScoredGame | RankedGame
+
 
 export interface LeaderboardEntry {
     date: Timestamp
@@ -38,9 +56,7 @@ export interface ScoredLeaderboardEntry extends LeaderboardEntry {
     score: number
 }
 
-export interface RankedLeaderboardEntry extends LeaderboardEntry {
-    consecutiveWins: number
-}
+export type RankedLeaderboardEntry = LeaderboardEntry;
 
 export enum GameType {
     RANKED = 0,
