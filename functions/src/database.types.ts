@@ -38,6 +38,10 @@ export interface ScoredLeaderboardEntry extends LeaderboardEntry {
     score: number
 }
 
+export interface RankedLeaderboardEntry extends LeaderboardEntry {
+    consecutiveWins: number
+}
+
 export enum GameType {
     RANKED = 0,
     HIGH_SCORE,
