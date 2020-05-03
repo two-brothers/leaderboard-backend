@@ -87,13 +87,14 @@ const updateGameWithRankedMatch = (match: RankedMatch, game: RankedGame): Partia
     // to a higher ranking, even if the player is not on the leaderboard (their index is negative)
     // this simplifies the following case enumeration
     const reversed = game.leaderboard.reverse()
-    const winnerReversedIdx = reversed.findIndex((entry) => entry.player === match.result.winner)
-    const loserReversedIdx = reversed.findIndex((entry) => entry.player === match.result.loser)
+
+    const winnerReversedIdx = reversed.findIndex((entry) => entry.player.isEqual(match.result.winner))
+    const loserReversedIdx = reversed.findIndex((entry) => entry.player.isEqual(match.result.loser))
     const newEntry: RankedLeaderboardEntry = { date: match.date, player: match.result.winner }
 
     let leaderboard = game.leaderboard
-    const winningStreak = (leaderboard.length === 0 || leaderboard[0].player === match.result.loser) ? 1 :
-        (leaderboard[0].player === match.result.loser) ? game.winningStreak + 1 : game.winningStreak
+    const winningStreak = (leaderboard.length === 0 || leaderboard[0].player.isEqual(match.result.loser)) ? 1 :
+        (leaderboard[0].player.isEqual(match.result.winner)) ? game.winningStreak + 1 : game.winningStreak
 
     if (winnerReversedIdx < 0 && loserReversedIdx < 0) { // neither player was on the leaderboard
         leaderboard = [...game.leaderboard, newEntry]
@@ -105,7 +106,7 @@ const updateGameWithRankedMatch = (match: RankedMatch, game: RankedGame): Partia
         leaderboard = [
             ...leaderboard.slice(0, loserIdx), // everyone strictly before the loser
             newEntry,
-            ...leaderboard.slice(loserIdx).filter(entry => entry.player !== match.result.winner) // everyone after the loser (inclusive), removing the winner if necessary
+            ...leaderboard.slice(loserIdx).filter(entry => !entry.player.isEqual(match.result.winner)) // everyone after the loser (inclusive), removing the winner if necessary
         ]
     }
 
