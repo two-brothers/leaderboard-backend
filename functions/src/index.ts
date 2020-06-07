@@ -86,7 +86,7 @@ const updateGameWithRankedMatch = (match: RankedMatch, game: RankedGame): Partia
     // searching the list backwards has the advantage that a higher array index corresponds
     // to a higher ranking, even if the player is not on the leaderboard (their index is negative)
     // this simplifies the following case enumeration
-    const reversed = game.leaderboard.reverse()
+    const reversed = game.leaderboard.map((item,idx) => game.leaderboard[game.leaderboard.length-1-idx])
 
     const winnerReversedIdx = reversed.findIndex((entry) => entry.player.isEqual(match.result.winner))
     const loserReversedIdx = reversed.findIndex((entry) => entry.player.isEqual(match.result.loser))
